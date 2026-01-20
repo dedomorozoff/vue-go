@@ -1,5 +1,8 @@
 # Admin commands
-.PHONY: install dev build test clean migrate seed admin
+.PHONY: install dev build test clean migrate seed admin setup
+
+setup: install migrate admin seed
+	@echo "Setup complete! Run 'make dev' to start."
 
 install:
 	@echo "Installing backend dependencies..."
