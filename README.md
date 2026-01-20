@@ -24,6 +24,16 @@ A full-stack project template with a Go (Golang) backend and a Vue.js (Vite) fro
 └── go.mod            # Go module definition
 ```
 
+## Quick Start (One-liner)
+
+You can scaffold a new project using `degit`. This will download the template without the git history:
+
+```bash
+npx degit dedomorozoff/vue-go my-project && cd my-project && make install && make migrate && make admin
+```
+
+> **Note:** You can also click the **"Use this template"** button on GitHub to create a new repository based on this one.
+
 ## Getting Started
 
 ### Prerequisites
