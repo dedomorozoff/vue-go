@@ -23,12 +23,12 @@ var frontendFS embed.FS
 func main() {
 	// Initialize Database connection
 	database.InitDB()
+	database.Migrate()
 
 	// Handle flags
 	for _, arg := range os.Args {
 		switch arg {
 		case "--migrate":
-			database.Migrate()
 			fmt.Println("Migration completed.")
 			return
 		case "--seed":
@@ -41,9 +41,6 @@ func main() {
 			return
 		}
 	}
-
-	// Default: Run migrations on every start (GORM AutoMigrate is safe)
-	database.Migrate()
 
 	r := chi.NewRouter()
 
