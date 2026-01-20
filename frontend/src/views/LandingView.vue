@@ -1,5 +1,8 @@
 <script setup>
-import { Shield, Zap, Sparkles, Globe, Server, Code, ArrowRight } from 'lucide-vue-next'
+import { useAuthStore } from '../stores/auth'
+import { Shield, Zap, Sparkles, Globe, Server, Code, ArrowRight, LayoutDashboard } from 'lucide-vue-next'
+
+const auth = useAuthStore()
 </script>
 
 <template>
@@ -80,11 +83,50 @@ import { Shield, Zap, Sparkles, Globe, Server, Code, ArrowRight } from 'lucide-v
       </div>
     </section>
 
+    <!-- Stack Section -->
+    <section id="stack" class="stack">
+      <div class="container">
+        <div class="section-header">
+          <span class="badge">Technology Stack</span>
+          <h2>Modern & Robust Tools</h2>
+        </div>
+        <div class="stack-grid">
+          <div class="stack-item">
+            <div class="stack-box glass-card">
+              <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/go/go-original.svg" alt="Go" width="60" />
+            </div>
+            <h4>Go Backend</h4>
+            <p>Go 1.25, chi Router, GORM, SQLite</p>
+          </div>
+          <div class="stack-item">
+            <div class="stack-box glass-card">
+              <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/vuejs/vuejs-original.svg" alt="Vue" width="60" />
+            </div>
+            <h4>Vue Frontend</h4>
+            <p>Vue 3, Vite, Pinia, Vue Router</p>
+          </div>
+          <div class="stack-item">
+            <div class="stack-box glass-card">
+              <div class="custom-stack-icon"><Code :size="40" color="#64748b" /></div>
+            </div>
+            <h4>Ecosystem</h4>
+            <p>JWT Auth, Lucide Icons, Axios, Makefile</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
     <footer class="footer">
       <div class="container">
         <p>&copy; 2026 VueGo Project. Built with ❤️ by Antigravity.</p>
       </div>
     </footer>
+
+    <!-- Floating Action Button -->
+    <RouterLink v-if="auth.isAuthenticated" to="/admin" class="fab glass-card" title="Back to Admin">
+      <LayoutDashboard :size="24" />
+      <span class="fab-text">Dashboard</span>
+    </RouterLink>
   </div>
 </template>
 
@@ -141,14 +183,14 @@ import { Shield, Zap, Sparkles, Globe, Server, Code, ArrowRight } from 'lucide-v
   gap: 32px;
 }
 
-.nav-links a {
+.nav-links a:not(.btn-primary) {
   text-decoration: none;
   color: var(--text-muted);
   font-weight: 500;
   transition: color 0.2s;
 }
 
-.nav-links a:hover {
+.nav-links a:not(.btn-primary):hover {
   color: var(--primary);
 }
 
@@ -310,6 +352,96 @@ pre {
 
 .feature-card p {
   color: var(--text-muted);
+}
+
+/* Stack Section */
+.stack {
+  padding: 100px 0;
+  background: #fcfcfd;
+}
+
+.stack-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 40px;
+}
+
+.stack-item {
+  text-align: center;
+}
+
+.stack-box {
+  width: 120px;
+  height: 120px;
+  margin: 0 auto 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 24px;
+  transition: transform 0.3s;
+}
+
+.stack-item:hover .stack-box {
+  transform: scale(1.1) rotate(5deg);
+}
+
+.stack-item h4 {
+  font-size: 1.25rem;
+  margin-bottom: 8px;
+}
+
+.stack-item p {
+  color: var(--text-muted);
+  font-size: 0.875rem;
+}
+
+.custom-stack-icon {
+  background: #f1f5f9;
+  width: 60px;
+  height: 60px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Floating Action Button */
+.fab {
+  position: fixed;
+  bottom: 40px;
+  right: 40px;
+  background: var(--primary);
+  color: white;
+  padding: 16px;
+  border-radius: 50px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  text-decoration: none;
+  box-shadow: 0 12px 32px rgba(99, 102, 241, 0.4);
+  z-index: 1000;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  overflow: hidden;
+  max-width: 56px;
+}
+
+.fab:hover {
+  max-width: 200px;
+  padding: 16px 24px;
+  transform: translateY(-5px);
+  background: var(--primary-hover);
+}
+
+.fab-text {
+  font-weight: 600;
+  white-space: nowrap;
+  opacity: 0;
+  transition: opacity 0.2s;
+}
+
+.fab:hover .fab-text {
+  opacity: 1;
 }
 
 .footer {
