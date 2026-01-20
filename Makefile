@@ -35,8 +35,7 @@ seed:
 
 admin:
 	@go run scripts/prepare.go
-	@read -p "Enter new admin password: " PASS; \
-	ADMIN_PASSWORD=$$PASS go run main.go --set-admin
+	@go run main.go --set-admin
 
 build:
 	@echo "Building frontend..."

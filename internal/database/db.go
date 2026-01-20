@@ -1,6 +1,7 @@
 package database
 
 import (
+	"fmt"
 	"log"
 	"os"
 
@@ -43,7 +44,12 @@ func Seed() {
 func SetAdmin() {
 	adminPass := os.Getenv("ADMIN_PASSWORD")
 	if adminPass == "" {
-		adminPass = "password123"
+		fmt.Print("Enter new admin password: ")
+		fmt.Scanln(&adminPass)
+		if adminPass == "" {
+			adminPass = "password123"
+			fmt.Println("No password entered, using default: password123")
+		}
 	}
 
 	var user models.User
