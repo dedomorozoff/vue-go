@@ -18,7 +18,7 @@ func InitDB() {
 	}
 
 	// Auto Migrate the schema
-	err = DB.AutoMigrate(&models.Project{})
+	err = DB.AutoMigrate(&models.Project{}, &models.User{})
 	if err != nil {
 		log.Fatal("Failed to migrate database:", err)
 	}
@@ -33,5 +33,18 @@ func InitDB() {
 			{Title: "Premium UI", Description: "Make it look stunning", Status: "Active"},
 		}
 		DB.Create(&projects)
+	}
+
+	// Seed admin user
+	var userCount int64
+	DB.Model(&models.User{}).Count(&userCount)
+	if userCount == 0 {
+		admin := models.User{
+			Username: "admin",
+			Password: "password123",
+		}
+		admin.HashPassword()
+		DB.Create(&admin)
+		log.Println("Seeded admin user: admin / password123")
 	}
 }

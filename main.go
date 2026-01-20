@@ -9,6 +9,7 @@ import (
 	"os"
 	"strings"
 
+	"github.com/dedomorozoff/vue-go/internal/auth"
 	"github.com/dedomorozoff/vue-go/internal/database"
 	"github.com/dedomorozoff/vue-go/internal/handlers"
 	"github.com/go-chi/chi/v5"
@@ -39,7 +40,14 @@ func main() {
 	// API Routes
 	r.Route("/api", func(r chi.Router) {
 		r.Get("/health", handlers.HealthCheck)
-		r.Get("/projects", handlers.GetProjects)
+		
+		r.Post("/auth/login", handlers.Login)
+		
+		// Protected routes
+		r.Group(func(r chi.Router) {
+			r.Use(auth.JWTMiddleware)
+			r.Get("/projects", handlers.GetProjects)
+		})
 	})
 
 	// Frontend serving

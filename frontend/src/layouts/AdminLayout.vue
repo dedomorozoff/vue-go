@@ -1,5 +1,15 @@
 <script setup>
+import { useAuthStore } from '../stores/auth'
+import { useRouter } from 'vue-router'
 import { LayoutDashboard, FolderKanban, Activity, Settings, LogOut, Home } from 'lucide-vue-next'
+
+const auth = useAuthStore()
+const router = useRouter()
+
+const handleLogout = () => {
+  auth.logout()
+  router.push('/login')
+}
 </script>
 
 <template>
@@ -29,7 +39,7 @@ import { LayoutDashboard, FolderKanban, Activity, Settings, LogOut, Home } from 
           <Settings :size="20" />
           <span>Settings</span>
         </div>
-        <div class="nav-item logout">
+        <div class="nav-item logout" @click="handleLogout">
           <LogOut :size="20" />
           <span>Logout</span>
         </div>
@@ -41,12 +51,13 @@ import { LayoutDashboard, FolderKanban, Activity, Settings, LogOut, Home } from 
         <h1>{{ $route.meta.title || 'Admin' }}</h1>
         <div class="user-profile">
           <div class="user-info">
-            <span class="user-name">Alex DeMoroz</span>
+            <span class="user-name">{{ auth.user?.username }}</span>
             <span class="user-role">Administrator</span>
           </div>
-          <div class="avatar">AD</div>
+          <div class="avatar">{{ auth.user?.username?.substring(0, 2).toUpperCase() }}</div>
         </div>
       </header>
+
       <div class="page-container">
         <RouterView v-slot="{ Component }">
           <transition name="fade" mode="out-in">

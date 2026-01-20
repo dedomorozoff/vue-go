@@ -3,6 +3,8 @@ import LandingView from '../views/LandingView.vue'
 import AdminLayout from '../layouts/AdminLayout.vue'
 import HomeView from '../views/HomeView.vue'
 import ProjectsView from '../views/ProjectsView.vue'
+import LoginView from '../views/LoginView.vue'
+import { useAuthStore } from '../stores/auth'
 
 const router = createRouter({
     history: createWebHistory(),
@@ -13,8 +15,14 @@ const router = createRouter({
             component: LandingView
         },
         {
+            path: '/login',
+            name: 'login',
+            component: LoginView
+        },
+        {
             path: '/admin',
             component: AdminLayout,
+            meta: { requiresAuth: true },
             children: [
                 {
                     path: '',
@@ -31,6 +39,17 @@ const router = createRouter({
             ]
         }
     ]
+})
+
+router.beforeEach((to, from, next) => {
+    const auth = useAuthStore()
+    if (to.meta.requiresAuth && !auth.isAuthenticated) {
+        next('/login')
+    } else if (to.name === 'login' && auth.isAuthenticated) {
+        next('/admin')
+    } else {
+        next()
+    }
 })
 
 export default router
