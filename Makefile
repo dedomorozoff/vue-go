@@ -1,4 +1,5 @@
-.PHONY: install dev build test clean
+# Admin commands
+.PHONY: install dev build test clean migrate seed admin
 
 install:
 	@echo "Installing backend dependencies..."
@@ -16,8 +17,19 @@ dev-frontend:
 
 dev:
 	@echo "Starting both backend and frontend..."
-	# Using make -j to run in parallel
 	make -j 2 dev-backend dev-frontend
+
+migrate:
+	@echo "Running migrations..."
+	go run main.go --migrate
+
+seed:
+	@echo "Seeding initial data..."
+	go run main.go --seed
+
+admin:
+	@read -p "Enter new admin password: " PASS; \
+	ADMIN_PASSWORD=$$PASS go run main.go --set-admin
 
 build:
 	@echo "Building frontend..."

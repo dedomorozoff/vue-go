@@ -2,6 +2,7 @@ package database
 
 import (
 	"log"
+	"os"
 
 	"github.com/dedomorozoff/vue-go/internal/models"
 	"gorm.io/driver/sqlite"
@@ -16,14 +17,16 @@ func InitDB() {
 	if err != nil {
 		log.Fatal("Failed to connect to database:", err)
 	}
+}
 
-	// Auto Migrate the schema
-	err = DB.AutoMigrate(&models.Project{}, &models.User{})
+func Migrate() {
+	err := DB.AutoMigrate(&models.Project{}, &models.User{})
 	if err != nil {
 		log.Fatal("Failed to migrate database:", err)
 	}
+}
 
-	// Seed data if empty
+func Seed() {
 	var count int64
 	DB.Model(&models.Project{}).Count(&count)
 	if count == 0 {
@@ -33,18 +36,33 @@ func InitDB() {
 			{Title: "Premium UI", Description: "Make it look stunning", Status: "Active"},
 		}
 		DB.Create(&projects)
+		log.Println("Seeded projects data.")
+	}
+}
+
+func SetAdmin() {
+	adminPass := os.Getenv("ADMIN_PASSWORD")
+	if adminPass == "" {
+		adminPass = "password123"
 	}
 
-	// Seed admin user
-	var userCount int64
-	DB.Model(&models.User{}).Count(&userCount)
-	if userCount == 0 {
+	var user models.User
+	result := DB.Where("username = ?", "admin").First(&user)
+	
+	if result.Error != nil {
+		// Create new admin
 		admin := models.User{
 			Username: "admin",
-			Password: "password123",
+			Password: adminPass,
 		}
 		admin.HashPassword()
 		DB.Create(&admin)
-		log.Println("Seeded admin user: admin / password123")
+		log.Printf("Created admin user: admin / %s\n", adminPass)
+	} else {
+		// Update existing admin password
+		user.Password = adminPass
+		user.HashPassword()
+		DB.Save(&user)
+		log.Printf("Updated admin password for: admin / %s\n", adminPass)
 	}
 }

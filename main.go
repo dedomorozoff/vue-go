@@ -21,8 +21,29 @@ import (
 var frontendFS embed.FS
 
 func main() {
-	// Initialize Database
+	// Initialize Database connection
 	database.InitDB()
+
+	// Handle flags
+	for _, arg := range os.Args {
+		switch arg {
+		case "--migrate":
+			database.Migrate()
+			fmt.Println("Migration completed.")
+			return
+		case "--seed":
+			database.Seed()
+			fmt.Println("Seeding completed.")
+			return
+		case "--set-admin":
+			database.SetAdmin()
+			fmt.Println("Admin user updated.")
+			return
+		}
+	}
+
+	// Default: Run migrations on every start (GORM AutoMigrate is safe)
+	database.Migrate()
 
 	r := chi.NewRouter()
 
