@@ -12,7 +12,7 @@ const auth = useAuthStore()
       <div class="container">
         <div class="logo">
           <Zap class="icon-brand" />
-          <span>VueGo</span>
+          <span>Vue-Go</span>
         </div>
         <div class="nav-links">
           <a href="#features">Features</a>
@@ -118,7 +118,7 @@ const auth = useAuthStore()
 
     <footer class="footer">
       <div class="container">
-        <p>&copy; 2026 VueGo Project. Built with ❤️ by Antigravity.</p>
+        <p>&copy; 2026 Vue-Go Project.</p>
       </div>
     </footer>
 

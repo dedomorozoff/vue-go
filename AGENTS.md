@@ -20,12 +20,14 @@ This file documents the AI agents (like Antigravity) that assist in the developm
 ### 🛠 Active Workflows
 
 - **Dev Workflow**: `make dev` runs both Vite and Go. Vite proxies `/api` to `:8080`.
+- **Install Workflow**: `make install` -> `make migrate` -> `make admin` -> `make seed`.
 - **Build Workflow**: `make build` compiles frontend, then builds Go with the static assets embedded.
 
 ### 📅 Session History Summary
 
-- **2026-01-21**: Project initialization. 
-    - Set up Go server with `chi` and CORS.
-    - Scaffolded Vue frontend with Vite.
-    - Configured Vite Proxy and Go SPA routing with `go:embed`.
-    - Created automation via `Makefile`.
+- **2026-01-21**: Project initialization & Authentication. 
+    - Set up Go server with `chi`, SQLite, and GORM.
+    - Scaffolded Vue frontend with Vite, Vue Router, and Pinia.
+    - Implemented JWT authentication and protected routes.
+    - Created interactive `make admin` command and separate `migrate`/`seed` commands.
+    - Refined UI with a premium Landing page and Admin dashboard.

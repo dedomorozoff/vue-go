@@ -1,8 +1,8 @@
-# Vue + Go Starter Kit
+# Vue-Go Starter Kit
 
 A full-stack project template with a Go (Golang) backend and a Vue.js (Vite) frontend, designed to provide a Laravel-like developer experience.
 
-## 🚀 Features
+## Features
 
 - **Monolith Structure**: Frontend and backend in a single repository.
 - **Modern Tech Stack**: Go 1.25+, Vue 3 (Composition API), Vite.
@@ -11,30 +11,48 @@ A full-stack project template with a Go (Golang) backend and a Vue.js (Vite) fro
     - Automated proxy in dev mode (Vite -> Go).
     - Shared management via `Makefile`.
     - SPA routing support out of the box.
+- **Ready-to-go Auth**: JWT authentication with Pinia and Axios already configured.
 
-## 🛠 Project Structure
+## Project Structure
 
 ```text
 .
-├── cmd/server/       # Go entry point (main.go)
+├── main.go           # Go entry point
 ├── frontend/         # Vue.js application (Vite)
-├── internal/         # Backend business logic, models, services
+├── internal/         # Backend business logic, models, handlers
 ├── Makefile          # Main command center
 └── go.mod            # Go module definition
 ```
 
-## 🚥 Getting Started
+## Getting Started
 
 ### Prerequisites
 
 - Go (1.25 or later)
 - Node.js (v20+) & npm
 
-### Installation
+### Installation from scratch
 
-```bash
-make install
-```
+1. **Install dependencies**:
+   ```bash
+   make install
+   ```
+
+2. **Initialize Database**:
+   ```bash
+   make migrate
+   ```
+
+3. **Set up Admin User**:
+   ```bash
+   make admin
+   ```
+   *Follow the interactive prompt to set your password.*
+
+4. **(Optional) Seed test data**:
+   ```bash
+   make seed
+   ```
 
 ### Development
 
@@ -42,12 +60,11 @@ Run both backend and frontend simultaneously with Hot Module Replacement (HMR):
 
 ```bash
 make dev
-# or
-npm run dev
 ```
 
 - **Frontend**: http://localhost:5173
 - **Backend API**: http://localhost:8080 (Proxied via frontend)
+- **Admin**: http://localhost:5173/admin
 
 ### Production Build
 
@@ -58,10 +75,12 @@ make build
 ```
 The resulting binary will be in `bin/server`.
 
-## 📡 API Endpoints
+##  API Endpoints
 
-- `GET /api/health`: Health check endpoint.
+- `GET /api/health`: Health check.
+- `POST /api/auth/login`: Authentication.
+- `GET /api/projects`: Protected list of projects.
 
-## 📝 License
+##  License
 
 MIT
