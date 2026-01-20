@@ -11,7 +11,7 @@ install:
 	cd frontend && npm install
 
 dev-backend:
-	@mkdir -p frontend/dist && touch frontend/dist/index.html
+	@go run scripts/prepare.go
 	@echo "Starting Go backend..."
 	go run main.go
 
@@ -24,17 +24,17 @@ dev:
 	make -j 2 dev-backend dev-frontend
 
 migrate:
-	@mkdir -p frontend/dist && touch frontend/dist/index.html
+	@go run scripts/prepare.go
 	@echo "Running migrations..."
 	go run main.go --migrate
 
 seed:
-	@mkdir -p frontend/dist && touch frontend/dist/index.html
+	@go run scripts/prepare.go
 	@echo "Seeding initial data..."
 	go run main.go --seed
 
 admin:
-	@mkdir -p frontend/dist && touch frontend/dist/index.html
+	@go run scripts/prepare.go
 	@read -p "Enter new admin password: " PASS; \
 	ADMIN_PASSWORD=$$PASS go run main.go --set-admin
 

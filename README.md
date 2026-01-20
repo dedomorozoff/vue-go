@@ -41,28 +41,31 @@ npx degit dedomorozoff/vue-go my-project && cd my-project && make setup
 - Go (1.25 or later)
 - Node.js (v20+) & npm
 
-### Installation from scratch
+### Installation
 
-1. **Install dependencies**:
-   ```bash
-   make install
-   ```
+The fastest way to get everything ready is:
 
-2. **Initialize Database**:
-   ```bash
-   make migrate
-   ```
+```bash
+make setup
+```
 
-3. **Set up Admin User**:
-   ```bash
-   make admin
-   ```
-   *Follow the interactive prompt to set your password.*
+This command automates:
+1. Installing backend and frontend dependencies.
+2. Preparing the environment (cross-platform).
+3. Running database migrations.
+4. Setting up the Admin user (interactive).
+5. Seeding initial data.
 
-4. **(Optional) Seed test data**:
-   ```bash
-   make seed
-   ```
+#### Manual Installation (Optional)
+
+If you want to run steps separately:
+
+```bash
+make install
+make migrate
+make admin
+make seed
+```
 
 ### Development
 
