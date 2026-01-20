@@ -9,6 +9,8 @@ import (
 	"os"
 	"strings"
 
+	"github.com/alexl/vue-go/internal/database"
+	"github.com/alexl/vue-go/internal/handlers"
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
 	"github.com/go-chi/cors"
@@ -18,6 +20,9 @@ import (
 var frontendFS embed.FS
 
 func main() {
+	// Initialize Database
+	database.InitDB()
+
 	r := chi.NewRouter()
 
 	r.Use(middleware.Logger)
@@ -33,10 +38,8 @@ func main() {
 
 	// API Routes
 	r.Route("/api", func(r chi.Router) {
-		r.Get("/health", func(w http.ResponseWriter, r *http.Request) {
-			w.Header().Set("Content-Type", "application/json")
-			w.Write([]byte(`{"status": "ok", "message": "Go API is alive"}`))
-		})
+		r.Get("/health", handlers.HealthCheck)
+		r.Get("/projects", handlers.GetProjects)
 	})
 
 	// Frontend serving
