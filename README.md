@@ -88,6 +88,20 @@ make build
 ```
 The resulting binary will be in `bin/server`.
 
+## Configuration
+
+The project uses environment variables for configuration. You can find all available options in `.env.example`.
+
+To customize your project:
+1. Copy `.env.example` to `.env`.
+2. Update the values in `.env`.
+
+| Variable | Description | Default |
+|----------|-------------|---------|
+| `APP_PORT` | The port the server listens on | `8080` |
+| `DB_PATH` | Path to the SQLite database file | `app.db` |
+| `JWT_SECRET` | Secret key for signing JWT tokens | `your...` |
+
 ##  API Endpoints
 
 - `GET /api/health`: Health check.

@@ -7,6 +7,19 @@ import (
 )
 
 func main() {
+	// 1. Create .env from .env.example if not exists
+	if _, err := os.Stat(".env"); os.IsNotExist(err) {
+		if _, err := os.Stat(".env.example"); err == nil {
+			content, err := os.ReadFile(".env.example")
+			if err == nil {
+				err = os.WriteFile(".env", content, 0644)
+				if err == nil {
+					fmt.Println(".env file created from .env.example")
+				}
+			}
+		}
+	}
+
 	distPath := filepath.Join("frontend", "dist")
 	
 	// Create directory

@@ -3,13 +3,20 @@ package auth
 import (
 	"context"
 	"net/http"
+	"os"
 	"strings"
 	"time"
 
 	"github.com/golang-jwt/jwt/v5"
 )
 
-var jwtSecret = []byte("your-very-secret-key") // In production use Env variable
+func getSecret() []byte {
+	secret := os.Getenv("JWT_SECRET")
+	if secret == "" {
+		return []byte("your-very-secret-key-fallback")
+	}
+	return []byte(secret)
+}
 
 type Claims struct {
 	UserID uint   `json:"user_id"`
@@ -27,7 +34,7 @@ func GenerateToken(userID uint, username string) (string, error) {
 	}
 
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
-	return token.SignedString(jwtSecret)
+	return token.SignedString(getSecret())
 }
 
 func JWTMiddleware(next http.Handler) http.Handler {
@@ -48,7 +55,7 @@ func JWTMiddleware(next http.Handler) http.Handler {
 		claims := &Claims{}
 
 		token, err := jwt.ParseWithClaims(tokenString, claims, func(token *jwt.Token) (interface{}, error) {
-			return jwtSecret, nil
+			return getSecret(), nil
 		})
 
 		if err != nil || !token.Valid {

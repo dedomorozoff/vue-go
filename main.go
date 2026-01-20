@@ -15,12 +15,16 @@ import (
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
 	"github.com/go-chi/cors"
+	"github.com/joho/godotenv"
 )
 
 //go:embed all:frontend/dist
 var frontendFS embed.FS
 
 func main() {
+	// Load .env file
+	_ = godotenv.Load()
+
 	// Initialize Database connection
 	database.InitDB()
 	database.Migrate()
@@ -104,7 +108,7 @@ func main() {
 		fileServer.ServeHTTP(w, r)
 	}))
 
-	port := os.Getenv("PORT")
+	port := os.Getenv("APP_PORT")
 	if port == "" {
 		port = "8080"
 	}
