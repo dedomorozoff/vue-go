@@ -3,7 +3,7 @@ package database
 import (
 	"log"
 
-	"github.com/alexl/vue-go/internal/models"
+	"github.com/dedomorozoff/vue-go/internal/models"
 	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
 )

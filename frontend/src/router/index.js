@@ -1,4 +1,6 @@
 import { createRouter, createWebHistory } from 'vue-router'
+import LandingView from '../views/LandingView.vue'
+import AdminLayout from '../layouts/AdminLayout.vue'
 import HomeView from '../views/HomeView.vue'
 import ProjectsView from '../views/ProjectsView.vue'
 
@@ -7,13 +9,26 @@ const router = createRouter({
     routes: [
         {
             path: '/',
-            name: 'home',
-            component: HomeView
+            name: 'landing',
+            component: LandingView
         },
         {
-            path: '/projects',
-            name: 'projects',
-            component: ProjectsView
+            path: '/admin',
+            component: AdminLayout,
+            children: [
+                {
+                    path: '',
+                    name: 'home',
+                    component: HomeView,
+                    meta: { title: 'Dashboard' }
+                },
+                {
+                    path: 'projects',
+                    name: 'projects',
+                    component: ProjectsView,
+                    meta: { title: 'Project Management' }
+                }
+            ]
         }
     ]
 })

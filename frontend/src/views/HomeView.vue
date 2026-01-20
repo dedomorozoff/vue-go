@@ -1,6 +1,6 @@
 <script setup>
 import { ref, onMounted } from 'vue'
-import { CheckCircle2, Clock, Layers } from 'lucide-vue-next'
+import { CheckCircle2, Clock, Layers, Activity } from 'lucide-vue-next'
 
 const stats = ref([
   { label: 'Total Projects', value: '12', icon: Layers, color: '#6366f1' },

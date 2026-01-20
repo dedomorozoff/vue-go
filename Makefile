@@ -8,7 +8,7 @@ install:
 
 dev-backend:
 	@echo "Starting Go backend..."
-	go run cmd/server/main.go
+	go run main.go
 
 dev-frontend:
 	@echo "Starting Vue frontend..."
@@ -23,7 +23,7 @@ build:
 	@echo "Building frontend..."
 	cd frontend && npm run build
 	@echo "Building backend..."
-	go build -o bin/server cmd/server/main.go
+	go build -o bin/server main.go
 
 clean:
 	rm -rf frontend/dist

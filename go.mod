@@ -1,4 +1,4 @@
-module github.com/alexl/vue-go
+module github.com/dedomorozoff/vue-go
 
 go 1.25.0
 

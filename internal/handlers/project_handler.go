@@ -4,8 +4,8 @@ import (
 	"encoding/json"
 	"net/http"
 
-	"github.com/alexl/vue-go/internal/database"
-	"github.com/alexl/vue-go/internal/models"
+	"github.com/dedomorozoff/vue-go/internal/database"
+	"github.com/dedomorozoff/vue-go/internal/models"
 )
 
 func GetProjects(w http.ResponseWriter, r *http.Request) {

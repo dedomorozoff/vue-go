@@ -9,8 +9,8 @@ import (
 	"os"
 	"strings"
 
-	"github.com/alexl/vue-go/internal/database"
-	"github.com/alexl/vue-go/internal/handlers"
+	"github.com/dedomorozoff/vue-go/internal/database"
+	"github.com/dedomorozoff/vue-go/internal/handlers"
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
 	"github.com/go-chi/cors"
