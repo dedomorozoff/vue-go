@@ -9,9 +9,8 @@ import (
 	"os"
 	"strings"
 
-	"github.com/dedomorozoff/vue-go/internal/auth"
 	"github.com/dedomorozoff/vue-go/internal/database"
-	"github.com/dedomorozoff/vue-go/internal/handlers"
+	"github.com/dedomorozoff/vue-go/internal/server"
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
 	"github.com/go-chi/cors"
@@ -60,17 +59,7 @@ func main() {
 	}))
 
 	// API Routes
-	r.Route("/api", func(r chi.Router) {
-		r.Get("/health", handlers.HealthCheck)
-		
-		r.Post("/auth/login", handlers.Login)
-		
-		// Protected routes
-		r.Group(func(r chi.Router) {
-			r.Use(auth.JWTMiddleware)
-			r.Get("/projects", handlers.GetProjects)
-		})
-	})
+	r.Route("/api", server.RegisterRoutes)
 
 	// Frontend serving
 	// Check if we are in production or dev
@@ -101,7 +90,7 @@ func main() {
 				return
 			}
 			index.Close()
-			
+
 			// Re-open index.html to serve it
 			r.URL.Path = "/index.html"
 		}
@@ -116,4 +105,3 @@ func main() {
 	fmt.Printf("Server starting on http://localhost:%s\n", port)
 	log.Fatal(http.ListenAndServe(":"+port, r))
 }
-
