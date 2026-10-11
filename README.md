@@ -5,21 +5,32 @@ A full-stack project template with a Go (Golang) backend and a Vue.js (Vite) fro
 ## Features
 
 - **Monolith Structure**: Frontend and backend in a single repository.
-- **Modern Tech Stack**: Go 1.25+, Vue 3 (Composition API), Vite.
+- **Modern Tech Stack**: Go 1.25+, Vue 3 (Composition API), Vite, Pinia, Vue Router, Axios.
 - **Embedded Frontend**: In production, the Vue application is embedded into the Go binary using `go:embed`.
 - **Developer Friendly**: 
     - Automated proxy in dev mode (Vite -> Go).
-    - Shared management via `Makefile`.
+    - Shared management via `Makefile` (`setup`, `dev`, `build`, `vet`, `test`, `docker-build`).
     - SPA routing support out of the box.
-- **Ready-to-go Auth**: JWT authentication with Pinia and Axios already configured.
+    - Cross-platform scripts (`scripts/prepare.go`, `scripts/clean.go`) — no bash required on Windows.
+- **Ready-to-go Auth**: JWT authentication (with `JWT_EXPIRES_IN` support) + Pinia store + Axios client with global 401 handling.
+- **Projects CRUD**: Search, status filter, pagination, create/edit modal, delete, live dashboard stats.
+- **Production-ready bits**: CORS from env (no wildcard with credentials), `RequestID`/`RealIP`/`Timeout` middleware, `slog`, graceful shutdown, real DB health check, unified JSON errors, `Dockerfile` + CI.
 
 ## Project Structure
 
 ```text
 .
-├── main.go           # Go entry point
+├── main.go           # Go entry point (chi + embed + graceful shutdown)
 ├── frontend/         # Vue.js application (Vite)
-├── internal/         # Backend business logic, models, handlers
+│   └── src/api/      # Shared axios client + resource modules
+├── internal/         # Backend business logic
+│   ├── auth/         # JWT generate/verify middleware
+│   ├── handlers/     # HTTP handlers + JSON helpers
+│   ├── models/       # GORM models
+│   └── server/routes # Route registration
+├── scripts/          # prepare.go (env + dist stub), clean.go
+├── Dockerfile        # Multi-stage build (node -> go -> alpine)
+├── .github/workflows # CI: go vet + frontend build
 ├── Makefile          # Main command center
 └── go.mod            # Go module definition
 ```
@@ -88,25 +99,44 @@ make build
 ```
 The resulting binary will be in `bin/server`.
 
+### Extra Commands
+
+```bash
+make vet          # go vet backend packages
+make test         # go test backend packages
+make clean        # cross-platform cleanup (Go script, Windows-safe)
+make docker-build # build production Docker image
+```
+
 ## Configuration
 
 The project uses environment variables for configuration. You can find all available options in `.env.example`.
 
 To customize your project:
-1. Copy `.env.example` to `.env`.
+1. Copy `.env.example` to `.env` (or let `make setup` / `prepare.go` generate it — a random `JWT_SECRET` is created automatically).
 2. Update the values in `.env`.
 
 | Variable | Description | Default |
 |----------|-------------|---------|
 | `APP_PORT` | The port the server listens on | `8080` |
+| `ALLOWED_ORIGINS` | CORS origins, comma-separated (no `*` with credentials) | `http://localhost:5173,http://localhost:3000` |
 | `DB_PATH` | Path to the SQLite database file | `app.db` |
-| `JWT_SECRET` | Secret key for signing JWT tokens | `your...` |
+| `JWT_SECRET` | Secret key for signing JWT tokens (must be strong, never default) | _(generated)_ |
+| `JWT_EXPIRES_IN` | Token lifetime, Go duration (`24h`, `720h`...) | `24h` |
 
 ##  API Endpoints
 
-- `GET /api/health`: Health check.
-- `POST /api/auth/login`: Authentication.
-- `GET /api/projects`: Protected list of projects.
+- `GET /api/health`: Health check (`{status, message, database}`).
+- `POST /api/auth/login`: Authentication (`{username, password}` → `{token, user}`).
+- `GET /api/auth/me`: Current user (protected).
+- `GET /api/dashboard/stats`: Live counts (`{total, active, completed, pending}`) (protected).
+- `GET /api/projects?search&status&page&per_page`: Paginated project list (protected).
+- `POST /api/projects`: Create project (protected).
+- `GET /api/projects/{id}`: Single project (protected).
+- `PUT /api/projects/{id}`: Update project (protected).
+- `DELETE /api/projects/{id}`: Delete project (protected).
+
+Errors are unified JSON: `{"error": "message"}`.
 
 ##  License
 
