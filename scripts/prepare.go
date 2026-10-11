@@ -1,9 +1,12 @@
 package main
 
 import (
+	"crypto/rand"
+	"encoding/hex"
 	"fmt"
 	"os"
 	"path/filepath"
+	"strings"
 )
 
 func main() {
@@ -12,8 +15,13 @@ func main() {
 		if _, err := os.Stat(".env.example"); err == nil {
 			content, err := os.ReadFile(".env.example")
 			if err == nil {
-				err = os.WriteFile(".env", content, 0644)
-				if err == nil {
+				text := string(content)
+				if strings.Contains(text, "REPLACE_ME_GENERATE_RANDOM_32_BYTES") {
+					secret := randomSecret(32)
+					text = strings.ReplaceAll(text, "REPLACE_ME_GENERATE_RANDOM_32_BYTES", secret)
+					fmt.Println("Generated random JWT_SECRET for .env")
+				}
+				if err := os.WriteFile(".env", []byte(text), 0600); err == nil {
 					fmt.Println(".env file created from .env.example")
 				}
 			}
@@ -21,7 +29,7 @@ func main() {
 	}
 
 	distPath := filepath.Join("frontend", "dist")
-	
+
 	// Create directory
 	err := os.MkdirAll(distPath, 0755)
 	if err != nil {
@@ -38,6 +46,14 @@ func main() {
 			os.Exit(1)
 		}
 	}
-	
+
 	fmt.Println("Project environment prepared.")
+}
+
+func randomSecret(n int) string {
+	b := make([]byte, n)
+	if _, err := rand.Read(b); err != nil {
+		return "fallback-insecure-change-me"
+	}
+	return hex.EncodeToString(b)
 }

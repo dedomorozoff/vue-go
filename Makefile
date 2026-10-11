@@ -1,5 +1,5 @@
 # Admin commands
-.PHONY: install dev build test clean migrate seed admin setup
+.PHONY: install dev build test vet lint clean migrate seed admin setup docker-build
 
 setup: install migrate admin seed
 	@echo "Setup complete! Run 'make dev' to start."
@@ -43,6 +43,14 @@ build:
 	@echo "Building backend..."
 	go build -o bin/server main.go
 
+vet:
+	go vet ./internal/auth/ ./internal/models/ ./internal/server/... .
+
+test:
+	go test ./internal/auth/ ./internal/models/ ./internal/server/... .
+
+docker-build:
+	docker build -t vue-go:latest .
+
 clean:
-	rm -rf frontend/dist
-	rm -rf bin/
+	go run scripts/clean.go

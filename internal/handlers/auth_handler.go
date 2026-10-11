@@ -3,6 +3,7 @@ package handlers
 import (
 	"encoding/json"
 	"net/http"
+	"strings"
 
 	"github.com/dedomorozoff/vue-go/internal/auth"
 	"github.com/dedomorozoff/vue-go/internal/database"
@@ -22,30 +23,49 @@ type LoginResponse struct {
 func Login(w http.ResponseWriter, r *http.Request) {
 	var req LoginRequest
 	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
-		http.Error(w, "Invalid request", http.StatusBadRequest)
+		WriteError(w, "Invalid request", http.StatusBadRequest)
+		return
+	}
+	req.Username = strings.TrimSpace(req.Username)
+	if req.Username == "" || req.Password == "" {
+		WriteError(w, "Username and password are required", http.StatusBadRequest)
 		return
 	}
 
 	var user models.User
 	if err := database.DB.Where("username = ?", req.Username).First(&user).Error; err != nil {
-		http.Error(w, "Invalid credentials", http.StatusUnauthorized)
+		WriteError(w, "Invalid credentials", http.StatusUnauthorized)
 		return
 	}
 
 	if !user.CheckPassword(req.Password) {
-		http.Error(w, "Invalid credentials", http.StatusUnauthorized)
+		WriteError(w, "Invalid credentials", http.StatusUnauthorized)
 		return
 	}
 
 	token, err := auth.GenerateToken(user.ID, user.Username)
 	if err != nil {
-		http.Error(w, "Failed to generate token", http.StatusInternalServerError)
+		WriteError(w, "Failed to generate token", http.StatusInternalServerError)
 		return
 	}
 
-	w.Header().Set("Content-Type", "application/json")
-	json.NewEncoder(w).Encode(LoginResponse{
+	WriteJSON(w, http.StatusOK, LoginResponse{
 		Token: token,
 		User:  user,
 	})
+}
+
+// Me returns current authenticated user.
+func Me(w http.ResponseWriter, r *http.Request) {
+	claims, ok := auth.ClaimsFromContext(r.Context())
+	if !ok {
+		WriteError(w, "Unauthorized", http.StatusUnauthorized)
+		return
+	}
+	var user models.User
+	if err := database.DB.First(&user, claims.UserID).Error; err != nil {
+		WriteError(w, "User not found", http.StatusUnauthorized)
+		return
+	}
+	WriteJSON(w, http.StatusOK, user)
 }

@@ -1,22 +1,31 @@
 <script setup>
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, computed } from 'vue'
 import { CheckCircle2, Clock, Layers, Activity } from 'lucide-vue-next'
+import client from '../api/client'
 
-const stats = ref([
-  { label: 'Total Projects', value: '12', icon: Layers, color: '#6366f1' },
-  { label: 'Active Tasks', value: '24', icon: Activity, color: '#f59e0b' },
-  { label: 'Completed', value: '158', icon: CheckCircle2, color: '#10b981' },
+const counts = ref({ total: 0, active: 0, completed: 0, pending: 0 })
+
+const stats = computed(() => [
+  { label: 'Total Projects', value: String(counts.value.total), icon: Layers, color: '#6366f1' },
+  { label: 'Active Tasks', value: String(counts.value.active), icon: Activity, color: '#f59e0b' },
+  { label: 'Completed', value: String(counts.value.completed), icon: CheckCircle2, color: '#10b981' },
+  { label: 'Pending', value: String(counts.value.pending), icon: Clock, color: '#64748b' },
 ])
 
 const backendStatus = ref('Checking...')
 
 onMounted(async () => {
   try {
-    const res = await fetch('/api/health')
-    const data = await res.json()
-    backendStatus.value = data.message
+    const res = await client.get('/api/health')
+    backendStatus.value = res.data.message || res.data.status
   } catch (e) {
     backendStatus.value = 'Offline'
+  }
+  try {
+    const res = await client.get('/api/dashboard/stats')
+    counts.value = res.data
+  } catch (e) {
+    console.error('Failed to load stats')
   }
 })
 </script>
