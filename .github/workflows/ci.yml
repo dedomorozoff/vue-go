@@ -12,7 +12,9 @@ jobs:
       - uses: actions/setup-go@v5
         with:
           go-version: '1.25'
-      - run: go vet ./internal/auth/ ./internal/models/ ./internal/server/... .
+      # embed needs at least placeholder dist on fresh clone
+      - run: go run ./scripts/prepare.go
+      - run: go vet ./internal/...
 
   frontend:
     runs-on: ubuntu-latest

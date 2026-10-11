@@ -22,7 +22,7 @@ app.db-journal
 # Frontend
 frontend/node_modules
 frontend/dist/*
-!frontend/dist/index.html
+!frontend/dist/.gitkeep
 .DS_Store
 .env
 .env.local
